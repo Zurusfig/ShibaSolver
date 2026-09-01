@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import UserAvatar from "@/components/common/UserAvatar";
 
 type Author = {
   display_name: string;
@@ -206,10 +207,10 @@ const PostAuthor = ({
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-3">
-        <img
+        <UserAvatar
+          name={author.display_name}
           src={author.profile_picture}
-          alt={`${author.display_name}'s avatar`}
-          className="w-10 h-10 rounded-full"
+          size={40}
         />
         <span className="font-semibold text-dark-900">{author.display_name}</span>
       </div>

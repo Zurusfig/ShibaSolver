@@ -1,3 +1,5 @@
+import UserAvatar from "@/components/common/UserAvatar";
+
 // Type สำหรับข้อมูลใน Comment
 interface Comment {
   author: {
@@ -70,7 +72,7 @@ const TopComment = ({ comment }: TopCommentProps) => {
   return (
     <div>
       <div className="flex items-start gap-3">
-        <img src={comment.author.profile_picture} alt={`${comment.author.display_name}'s avatar`} className="w-8 h-8 rounded-full" />
+        <UserAvatar name={comment.author.display_name} src={comment.author.profile_picture} size={32} />
         <div className="flex-grow">
           <div className="flex items-baseline gap-2">
             <span className="font-semibold text-dark-900">{comment.author.display_name}</span>

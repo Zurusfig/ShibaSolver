@@ -19,6 +19,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '@/theme/theme';
+import UserAvatar from "@/components/common/UserAvatar";
 
 export const ReplyItem: React.FC<ReplyItemProps> = ({ 
   reply, 
@@ -89,13 +90,10 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
         style={{ marginLeft: `${indentWidth}px` }}
       >
         {/* Profile picture */}
-        <img
-          src={reply.author.profile_picture || "/image/DefaultAvatar.png"}
-          alt={`${reply.author.display_name}'s avatar`}
-          className="w-8 h-8 rounded-full flex-shrink-0"
-          onError={(e) => {
-            e.currentTarget.src = "/image/DefaultAvatar.png";
-          }}
+        <UserAvatar
+          name={reply.author.display_name}
+          src={reply.author.profile_picture}
+          size={32}
         />
 
         <div className="flex-grow min-w-0">

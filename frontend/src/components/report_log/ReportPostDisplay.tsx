@@ -5,7 +5,7 @@ import { slugify } from "@/utils/slugify";
 import PostHeader from "../post/PostHeader";
 import PostContent from "../post/PostContent";
 import Link from "next/link";
-import { Avatar } from "@mui/material";
+import UserAvatar from "@/components/common/UserAvatar";
 
 export interface ReportPostDisplayData {
   id: string;
@@ -291,10 +291,10 @@ export default function ReportPostDisplay({
 
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-600 transition-colors group-hover:border-accent-300 group-hover:bg-accent-50">
               <div className="flex items-center gap-3">
-                <Avatar
-                  alt={postData.author.display_name}
-                  src={postData.author.profile_picture || "/default-avatar.png"}
-                  className="w-8 h-8"
+                <UserAvatar
+                  name={postData.author.display_name}
+                  src={postData.author.profile_picture}
+                  size={32}
                 />
 
                 <div className="flex flex-col">

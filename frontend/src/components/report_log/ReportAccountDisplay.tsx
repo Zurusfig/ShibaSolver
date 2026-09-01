@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Avatar } from "@mui/material";
+import UserAvatar from "@/components/common/UserAvatar";
 
 export interface ReportAccountDisplayData {
   user_id: string;
@@ -196,10 +196,10 @@ export default function ReportAccountDisplay({
         >
           <div className="flex flex-col gap-4">
             <div className="flex items-start gap-4">
-              <Avatar
-                alt={accountData.display_name}
-                src={accountData.profile_picture || DEFAULT_AVATAR}
-                sx={{ width: 64, height: 64 }}
+              <UserAvatar
+                name={accountData.display_name}
+                src={accountData.profile_picture}
+                size={64}
               />
 
               <div className="flex-1">

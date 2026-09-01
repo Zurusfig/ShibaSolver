@@ -18,7 +18,7 @@ export default function GoogleSignInButton({ onSuccess, className = "" }: Google
         buttonRef.current.innerHTML = '';
         
         window.google.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
           callback: onSuccess,
         });
 
@@ -41,7 +41,7 @@ export default function GoogleSignInButton({ onSuccess, className = "" }: Google
         script.onload = () => {
           if (window.google && buttonRef.current) {
             window.google.accounts.id.initialize({
-              client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+              client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
               callback: onSuccess,
             });
 

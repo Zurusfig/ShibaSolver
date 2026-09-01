@@ -44,13 +44,15 @@ CREATE TABLE IF NOT EXISTS users (
     interested_subjects TEXT[],                  -- array of subjects the user is interested in
     profile_picture     TEXT,                    -- URL to profile picture
     created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT now()
     
 );
 
 CREATE TABLE IF NOT EXISTS admins (
     admin_id BIGSERIAL PRIMARY KEY,
-    name     TEXT NOT NULL
+    name     TEXT NOT NULL,
+    email    TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS tags (

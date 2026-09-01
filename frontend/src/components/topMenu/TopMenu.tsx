@@ -8,9 +8,10 @@ import {
   SettingsOutlined, Settings,
   NotificationsNone, Notifications,
 } from "@mui/icons-material";
-import { IconButton, Avatar } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useNotification } from "@/context/NotificationContext";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import UserAvatar from "@/components/common/UserAvatar";
 
 export default function TopMenu() {
   const router = useRouter();
@@ -96,8 +97,10 @@ export default function TopMenu() {
         {/* Profile / Sign in */}
         {isLoggedIn ? (
           <Link href={`/user/${user?.user_name}`}>
-            <Avatar
-              src={user?.profile_picture ?? "/default-avatar.png"}
+            <UserAvatar
+              name={user?.display_name ?? user?.user_name}
+              src={user?.profile_picture}
+              size={40}
               className="cursor-pointer"
             />
           </Link>

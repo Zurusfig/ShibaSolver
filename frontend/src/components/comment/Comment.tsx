@@ -25,6 +25,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/theme/theme";
 import CreateComment from "./CreateComment";
 import { useState } from "react";
+import UserAvatar from "@/components/common/UserAvatar";
 
 
 const Comment = ({ commentData, allComments = [], onDelete, postId }: CommentProps) => {
@@ -138,13 +139,10 @@ const Comment = ({ commentData, allComments = [], onDelete, postId }: CommentPro
 
       <div className="flex items-start gap-3 relative font-display border-t pb-2 pt-4">
         
-        <img
-          src={commentData.author.profile_picture || "/image/DefaultAvatar.png"}
-          alt={`${commentData.author.display_name}'s avatar`}
-          className="w-10 h-10 rounded-full"
-          onError={(e) => {
-            e.currentTarget.src = "/image/DefaultAvatar.png";
-          }}
+        <UserAvatar
+          name={commentData.author.display_name}
+          src={commentData.author.profile_picture}
+          size={40}
         />
 
         <div className="flex-grow">

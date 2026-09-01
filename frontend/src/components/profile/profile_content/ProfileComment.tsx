@@ -9,6 +9,7 @@ import { DislikeButton } from "@/components/comment/DislikeButton";
 import { useCommentActions } from "@/components/comment/useCommentActions";
 import { slugify } from "@/utils/slugify";
 import useCommentRating from "@/hooks/useCommentRating";
+import UserAvatar from "@/components/common/UserAvatar";
 
 export interface profileCommentData {
   comment_id: string;
@@ -87,13 +88,10 @@ export default function ProfileComment({
         {commentData.post_title}
       </div>
       <div className="flex items-start gap-3 relative font-display">
-        <img
+        <UserAvatar
+          name={commentData.author.display_name}
           src={commentData.author.profile_picture}
-          alt={`${commentData.author.display_name}'s avatar`}
-          className="w-10 h-10 rounded-full"
-          onError={(e) => {
-            e.currentTarget.src = "/image/DefaultAvatar.png";
-          }}
+          size={40}
         />
 
         <div className="flex-grow">

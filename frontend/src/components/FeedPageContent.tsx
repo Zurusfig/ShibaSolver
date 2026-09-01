@@ -11,6 +11,7 @@ import { useNotification } from "@/context/NotificationContext";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import SearchComponent from "@/components/topMenu/SearchComponent";
 import { slugify } from "@/utils/slugify";
+import UserAvatar from "@/components/common/UserAvatar";
 
 
 interface ApiResponse {
@@ -215,13 +216,10 @@ export default function Home() {
               <h4 className="text-md font-semibold text-gray-900 truncate">{sp.title ?? "Untitled"}</h4>
               <p className="text-sm text-gray-600 mt-1 truncate">{desc}</p>
               <div className="flex items-center gap-2 mt-3">
-                <img
-                  src={avatar}
-                  alt={`${authorName} avatar`}
-                  className="w-8 h-8 rounded-full object-cover"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "/image/DefaultAvatar.png";
-                  }}
+                <UserAvatar
+                  name={authorName}
+                  src={sp.author.profile_picture}
+                  size={32}
                 />
                 <span className="text-sm font-medium text-gray-800">{authorName}</span>
               </div>

@@ -14,8 +14,8 @@ exports.getFeed = async (req, res, next) => {
         u.user_id,
         u.display_name,
         u.profile_picture,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes
       FROM posts p
       JOIN users u ON u.user_id = p.user_id
       LEFT JOIN ratings r ON r.post_id = p.post_id
@@ -45,10 +45,10 @@ exports.getFeed = async (req, res, next) => {
         c.user_id,
         u.display_name,
         u.profile_picture,
-        COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END), 0) +
-        COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END), 0) AS total_ratings,
-        COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END), 0) AS likes,
-        COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+        COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END), 0)::int +
+        COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END), 0)::int AS total_ratings,
+        COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END), 0)::int AS likes,
+        COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes
       FROM comments c
       JOIN users u ON u.user_id = c.user_id
       LEFT JOIN ratings r ON r.comment_id = c.comment_id

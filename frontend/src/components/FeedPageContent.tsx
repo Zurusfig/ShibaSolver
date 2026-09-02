@@ -213,7 +213,7 @@ export default function Home() {
               href={`/post/${sp.post_id}/${slug}`}
               className="block p-3 rounded bg-accent-200/50 hover:bg-accent-200 mb-3"
             >
-              <h4 className="text-md font-semibold text-gray-900 truncate">{sp.title ?? "Untitled"}</h4>
+              <h4 className="text-base font-semibold text-gray-900 truncate">{sp.title ?? "Untitled"}</h4>
               <p className="text-sm text-gray-600 mt-1 truncate">{desc}</p>
               <div className="flex items-center gap-2 mt-3">
                 <UserAvatar
@@ -275,7 +275,7 @@ export default function Home() {
             isOpen ? "mr-[20%]" : ""
           } `}
         >
-          <h1 className="text-4xl font-bold p-4 mb-2 font-sans">Recent Posts</h1>
+          <h1 className="text-4xl font-bold p-4 mb-2 font-display">Recent Posts</h1>
           {renderContent()}
         </main>
       </div>

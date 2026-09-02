@@ -291,10 +291,10 @@ export default function ReportPostDisplay({
 
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-sm text-gray-600 transition-colors group-hover:border-accent-300 group-hover:bg-accent-50">
               <div className="flex items-center gap-3">
-                <UserAvatar
-                  name={postData.author.display_name}
-                  src={postData.author.profile_picture}
-                  size={32}
+                <Avatar
+                  alt={postData.author.display_name}
+                  src={postData.author.profile_picture || "/image/DefaultAvatar.png"}
+                  className="w-8 h-8"
                 />
 
                 <div className="flex flex-col">

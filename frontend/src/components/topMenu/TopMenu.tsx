@@ -53,7 +53,7 @@ export default function TopMenu() {
       
       {/* Logo */}
       <Link href="/">
-        <span className="font-sans font-black text-3xl text-white px-4">
+        <span className="font-display font-black text-3xl text-white px-4">
           Shiba
         </span>
       </Link>
@@ -97,17 +97,15 @@ export default function TopMenu() {
         {/* Profile / Sign in */}
         {isLoggedIn ? (
           <Link href={`/user/${user?.user_name}`}>
-            <UserAvatar
-              name={user?.display_name ?? user?.user_name}
-              src={user?.profile_picture}
-              size={40}
+            <Avatar
+              src={user?.profile_picture ?? "/image/DefaultAvatar.png"}
               className="cursor-pointer"
             />
           </Link>
         ) : (
           <Link
             href="/signup"
-            className="font-display font-semibold text-xl text-primary-0 rounded-full bg-white py-2 px-6 
+            className="font-display font-semibold text-xl text-primary-00 rounded-full bg-white py-2 px-6 
             !bg-accent-200"
           >
             Sign in

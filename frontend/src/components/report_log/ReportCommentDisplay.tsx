@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { slugify } from "@/utils/slugify";
-import { Avatar, Chip } from "@mui/material";
+import { Chip } from "@mui/material";
 import { userService } from "@/utils/userService";
+import UserAvatar from "@/components/common/UserAvatar";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL  ;
@@ -331,10 +332,10 @@ export default function ReportCommentDisplay({
     <div className="w-full rounded-2xl bg-white p-6 font-display shadow-lg">
       <div className="flex flex-col gap-4">
         <div className="flex items-start gap-3">
-          <Avatar
-            alt={commentData.author.display_name}
-            src={commentData.author.profile_picture || DEFAULT_AVATAR}
-            className="h-10 w-10"
+          <UserAvatar
+            name={commentData.author.display_name}
+            src={commentData.author.profile_picture}
+            size={40}
           />
 
           <div className="flex flex-col gap-1">

@@ -5,6 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSearch, PostResult, UserResult } from "@/hooks/useSearch";
 import { slugify } from "@/utils/slugify";
+import UserAvatar from "@/components/common/UserAvatar";
 type Mode = "post" | "user";
 
 
@@ -340,13 +341,12 @@ export default function SearchComponent({
                     className="w-full text-left px-5 py-4 hover:bg-pink-100 transition flex items-center gap-2 "
                     onClick={(e) => handleLinkClick(e, "user", u, href)}
                   >
-                    {u.avatarUrl ? (
-                      <img
-                        src={u.avatarUrl}
-                        alt=""
-                        className="w-12 h-12 rounded object-cover ml-4"
-                      />
-                    ) : null}
+                    <UserAvatar
+                      name={u.username}
+                      src={u.avatarUrl}
+                      size={48}
+                      className="ml-4"
+                    />
                     <div className="text-black font-semibold text-lg">{u.username}</div>
                   </Link>
                 );

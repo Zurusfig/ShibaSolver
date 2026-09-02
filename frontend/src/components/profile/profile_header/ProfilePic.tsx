@@ -1,8 +1,7 @@
 "use client";
 
-import Avatar from "@mui/material/Avatar";
-import Badge from "@mui/material/Badge";
 import { useState, useEffect } from "react";
+import UserAvatar from "@/components/common/UserAvatar";
 
 type Props = {
   src?: string;
@@ -35,14 +34,15 @@ export default function ProfilePic({ src, alt, size, responsiveSize }: Props) {
     );
   }
 
-  return (
-    <Avatar
-      alt={alt}
-      src={src}
-      sx={{
-        width: responsiveSize ? responsiveSize : (size ?? 160),
-        height: responsiveSize ? responsiveSize : (size ?? 160)
-      }}
-    />
-  );
+  if (responsiveSize) {
+    return (
+      <UserAvatar
+        name={alt}
+        src={src}
+        className="h-28 w-28 text-4xl md:h-36 md:w-36 md:text-5xl lg:h-40 lg:w-40 lg:text-6xl"
+      />
+    );
+  }
+
+  return <UserAvatar name={alt} src={src} size={typeof size === "number" ? size : 160} />;
 }

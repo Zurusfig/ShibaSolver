@@ -111,7 +111,7 @@ exports.getUnreadCount = async (req, res) => {
     const userId = req.user.uid;
 
     const { rows } = await pool.query(
-      `SELECT COUNT(*) AS count
+      `SELECT COUNT(*)::int AS count
        FROM notifications
        WHERE user_id = $1 AND is_read = FALSE`,
       [userId]

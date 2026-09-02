@@ -35,8 +35,8 @@ exports.getCommentsByUser = async (req, res, next) => {
         SELECT 
           c.comment_id, c.user_id, c.post_id, c.parent_comment, c.text,
           c.comment_image, c.is_solution, c.is_updated, c.created_at,
-          COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END),0) AS likes,
-          COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END),0) AS dislikes
+          COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END),0)::int AS likes,
+          COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END),0)::int AS dislikes
         FROM comments c
         LEFT JOIN ratings r ON c.comment_id = r.comment_id
         WHERE c.user_id = $1 AND c.is_deleted = FALSE
@@ -97,9 +97,9 @@ exports.getTopComment = async (req, res, next) => {
           c.is_solution,
           c.is_updated,
           c.created_at,
-          COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-          COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes,
-          COALESCE(COUNT(r.rating_id), 0) AS total_votes
+          COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+          COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes,
+          COALESCE(COUNT(r.rating_id), 0)::int AS total_votes
       FROM comments c
       LEFT JOIN ratings r ON c.comment_id = r.comment_id
       WHERE c.post_id = $1 AND c.is_deleted = FALSE
@@ -148,9 +148,9 @@ exports.getComment = async (req, res, next) => {
         c.is_solution, 
         c.is_updated, 
         c.created_at,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes,
-        COALESCE(COUNT(r.rating_id), 0) AS total_votes
+        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes,
+        COALESCE(COUNT(r.rating_id), 0)::int AS total_votes
       FROM comments c
       LEFT JOIN ratings r ON c.comment_id = r.comment_id
       WHERE c.comment_id = $1 AND c.is_deleted = FALSE
@@ -610,8 +610,8 @@ async function fetchCommentsByPost(
         c.is_solution,
         c.is_updated,
         c.created_at,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes
       FROM comments c
       JOIN users u ON u.user_id = c.user_id  
       LEFT JOIN ratings r ON c.comment_id = r.comment_id

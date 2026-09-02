@@ -154,8 +154,8 @@ exports.getPostbyUserId = async (req, res, next) => {
         u.user_id,
         u.display_name,
         u.profile_picture,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes,
+        COALESCE(SUM(CASE WHEN r.rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+        COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes,
         BOOL_OR(r_me.rating_type = 'like') AS liked_by_user,
         BOOL_OR(r_me.rating_type = 'dislike') AS disliked_by_user
       FROM posts p
@@ -188,8 +188,8 @@ exports.getPostbyUserId = async (req, res, next) => {
           c.user_id,
           u.display_name,
           u.profile_picture,
-          COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END), 0) AS likes,
-          COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+          COALESCE(SUM(CASE WHEN r.rating_type='like' THEN 1 ELSE 0 END), 0)::int AS likes,
+          COALESCE(SUM(CASE WHEN r.rating_type='dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes
         FROM comments c
         JOIN users u ON u.user_id = c.user_id
         LEFT JOIN ratings r ON r.comment_id = c.comment_id
@@ -232,7 +232,7 @@ exports.getPostbyUserId = async (req, res, next) => {
     }));
 
     const totalRes = await pool.query(
-      `SELECT COUNT(*) AS total FROM posts WHERE user_id = $1 AND is_deleted = FALSE;`,
+      `SELECT COUNT(*)::int AS total FROM posts WHERE user_id = $1 AND is_deleted = FALSE;`,
       [userID]
     );
 

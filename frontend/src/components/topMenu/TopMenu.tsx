@@ -8,9 +8,10 @@ import {
   SettingsOutlined, Settings,
   NotificationsNone, Notifications,
 } from "@mui/icons-material";
-import { IconButton, Avatar } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useNotification } from "@/context/NotificationContext";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import UserAvatar from "@/components/common/UserAvatar";
 
 export default function TopMenu() {
   const router = useRouter();

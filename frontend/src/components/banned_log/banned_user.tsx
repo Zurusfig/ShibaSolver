@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import UserAvatar from "@/components/common/UserAvatar";
 
 // No 'styled-components' or './BannedUser.css' import is needed
 
@@ -83,13 +84,10 @@ const BannedUser: React.FC<BannedUserProps> = ({
     <div className="bg-white rounded-3xl p-10 flex flex-col shadow-xl my-4 gap-4 font-display">
       <div className="flex flex-row items-center justify-between ">
         <div className="flex flex-row gap-4">
-            <img
+            <UserAvatar
+            name={nickname}
             src={profileImage}
-            alt={`${nickname}'s avatar`}
-            className="w-25 h-25 rounded-full"
-            onError={(e) => {
-                e.currentTarget.src = "/image/DefaultAvatar.png";
-            }}
+            size={100}
             />
             <div className="flex flex-col">
                 <h3 className="text-[#865DFF]  text-xl font-semibold ">{name}</h3>

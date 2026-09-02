@@ -39,8 +39,8 @@ exports.rate = async (req, res, next) => {
         // Get update counts
         const summarySql = `
         SELECT
-            COALESCE(SUM(CASE WHEN rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-            COALESCE(SUM(CASE WHEN rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+            COALESCE(SUM(CASE WHEN rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+            COALESCE(SUM(CASE WHEN rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes
         FROM ratings
         WHERE ${isPost ? "post_id = $1" : "comment_id = $1"};
         `;
@@ -99,8 +99,8 @@ exports.unrate = async (req, res, next) => {
         // get updated counts
         const countSql = `
         SELECT
-            COALESCE(SUM(CASE WHEN rating_type = 'like' THEN 1 ELSE 0 END), 0) AS likes,
-            COALESCE(SUM(CASE WHEN rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes
+            COALESCE(SUM(CASE WHEN rating_type = 'like' THEN 1 ELSE 0 END), 0)::int AS likes,
+            COALESCE(SUM(CASE WHEN rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes
         FROM ratings
         WHERE ${isPost ? 'post_id = $1' : 'comment_id = $1'};
         `;
@@ -149,8 +149,8 @@ exports.getSummaryBatch = async (req, res) => {
         const sql = `
         SELECT
             t.id,
-            COALESCE(SUM(CASE WHEN r_all.rating_type = 'like' THEN 1 ELSE 0 END), 0)    AS likes,
-            COALESCE(SUM(CASE WHEN r_all.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes,
+            COALESCE(SUM(CASE WHEN r_all.rating_type = 'like' THEN 1 ELSE 0 END), 0)::int    AS likes,
+            COALESCE(SUM(CASE WHEN r_all.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes,
             CASE
             WHEN MAX(CASE WHEN r_me.rating_type = 'like' THEN 1 END) = 1 THEN 'like'
             WHEN MAX(CASE WHEN r_me.rating_type = 'dislike' THEN 1 END) = 1 THEN 'dislike'
@@ -191,10 +191,10 @@ exports.getShibaMeter = async (req, res) => {
         if (userID.rows.length === 0) return res.status(404).json({ success:false, message:'User not found' });
         
         const sql = `SELECT
-            COUNT(DISTINCT c.comment_id) AS solution_comment_count,
-            COALESCE(SUM(CASE WHEN r.rating_type = 'like'    THEN 1 ELSE 0 END), 0) AS likes,
-            COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0) AS dislikes,
-            COALESCE(SUM(CASE WHEN r.rating_type IN ('like','dislike') THEN 1 ELSE 0 END), 0) AS total_ratings,
+            COUNT(DISTINCT c.comment_id)::int AS solution_comment_count,
+            COALESCE(SUM(CASE WHEN r.rating_type = 'like'    THEN 1 ELSE 0 END), 0)::int AS likes,
+            COALESCE(SUM(CASE WHEN r.rating_type = 'dislike' THEN 1 ELSE 0 END), 0)::int AS dislikes,
+            COALESCE(SUM(CASE WHEN r.rating_type IN ('like','dislike') THEN 1 ELSE 0 END), 0)::int AS total_ratings,
             -- ratio 0..1 (NULL if no ratings)
             CASE
             WHEN COALESCE(SUM(CASE WHEN r.rating_type IN ('like','dislike') THEN 1 END), 0) = 0

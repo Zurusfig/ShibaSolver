@@ -5,7 +5,7 @@ import { slugify } from "@/utils/slugify";
 import PostHeader from "../post/PostHeader";
 import PostContent from "../post/PostContent";
 import Link from "next/link";
-import { Avatar } from "@mui/material";
+import UserAvatar from "@/components/common/UserAvatar";
 
 export interface ReportPostDisplayData {
   id: string;

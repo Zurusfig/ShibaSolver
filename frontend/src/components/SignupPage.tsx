@@ -3,23 +3,24 @@ import ShibaIcon from "@/components/auth/ShibaIcon";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 import GuestContinueButton from "@/components/auth/GuestContinueButton";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
-import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useEffect } from "react";
 
 export default function SignupPage() {
   const { handleGoogleResponse, handleGuestContinue } = useGoogleAuth();
-  const router = useRouter();
+  const { user, isLoading, error } = useCurrentUser();
 
+  // Trust the session, not localStorage: a leftover username from an expired
+  // session used to redirect here forever and hide the sign-in button.
   useEffect(() => {
-    const checkAuth = async () => {
-      const username = localStorage.getItem("username");
-      if (username) {
-        window.location.href = `/user/${username}`;
-        return;
-      }
-    };
-    checkAuth();
-  }, [router]);
+    if (isLoading) return;
+    if (user?.user_name) {
+      window.location.href = `/user/${user.user_name}`;
+    } else if (error) {
+      localStorage.removeItem("username");
+      localStorage.removeItem("authToken");
+    }
+  }, [user, isLoading, error]);
 
 
   return (

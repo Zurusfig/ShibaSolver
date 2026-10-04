@@ -24,6 +24,17 @@ const notificationRouter = require("./routers/notificationRouter");
 dotenv.config({ path: "./config/config.env" });
 
 const app = express();
+// Requests arrive through the host's load balancer (and the frontend's
+// rewrite proxy), so the client IP is in X-Forwarded-For. Without this the
+// rate limiter sees every request as coming from the proxy.
+app.set("trust proxy", Number(process.env.TRUST_PROXY_HOPS) || 1);
+
+// Liveness check for uptime pings. Never touches the database, so frequent
+// pings keep the server awake without keeping the database awake.
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 //Set security headers
 app.use(helmet());
 app.use(express.json());

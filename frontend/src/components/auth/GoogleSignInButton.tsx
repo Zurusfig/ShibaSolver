@@ -2,6 +2,18 @@
 
 import { useEffect, useRef } from 'react';
 
+// Google renders the button as a fixed-width iframe, so give it an explicit
+// width and center it rather than letting it sit at the container's left edge.
+const BUTTON_OPTIONS = {
+  theme: 'outline',
+  size: 'large',
+  width: 320,
+  type: 'standard',
+  text: 'signin_with',
+  shape: 'rectangular',
+  logo_alignment: 'left',
+} as const;
+
 interface GoogleSignInButtonProps {
   onSuccess: (response: any) => void;
   className?: string;
@@ -22,14 +34,7 @@ export default function GoogleSignInButton({ onSuccess, className = "" }: Google
           callback: onSuccess,
         });
 
-        window.google.accounts.id.renderButton(buttonRef.current, {
-          theme: 'outline',
-          size: 'large',
-          // width: '300',
-          type: 'standard',
-          text: 'signin_with',
-          shape: 'rectangular',
-        });
+        window.google.accounts.id.renderButton(buttonRef.current, BUTTON_OPTIONS);
         return;
       }
 
@@ -45,14 +50,7 @@ export default function GoogleSignInButton({ onSuccess, className = "" }: Google
               callback: onSuccess,
             });
 
-            window.google.accounts.id.renderButton(buttonRef.current, {
-              theme: 'outline',
-              size: 'large',
-              // width: '300',
-              type: 'standard',
-              text: 'signin_with',
-              shape: 'rectangular',
-            });
+            window.google.accounts.id.renderButton(buttonRef.current, BUTTON_OPTIONS);
           }
         };
         document.head.appendChild(script);
@@ -66,7 +64,7 @@ export default function GoogleSignInButton({ onSuccess, className = "" }: Google
 
   return (
     <div className={`w-full ${className}`}>
-      <div ref={buttonRef} className="w-full"></div>
+      <div ref={buttonRef} className="flex justify-center min-h-[44px]"></div>
     </div>
   );
 }

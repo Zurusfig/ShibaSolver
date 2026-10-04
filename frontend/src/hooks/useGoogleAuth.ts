@@ -1,12 +1,18 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export function useGoogleAuth() {
   const router = useRouter();
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
 
   const handleGoogleResponse = (response: any) => {
     // response.credential is the Google id_token
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
+    setIsSigningIn(true);
+    setError(null);
     fetch(`${API_BASE}/api/v1/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -55,14 +61,42 @@ export function useGoogleAuth() {
             }
           });
       })
-      .catch((error) => {
-        console.error("Error signing in with Google:", error);
+      .catch((err) => {
+        console.error("Error signing in with Google:", err);
+        setIsSigningIn(false);
+        setError("Sign-in failed. Please try again.");
       });
+  };
+
+  const handleDemoLogin = async () => {
+    setIsSigningIn(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/auth/demo`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!data?.success) throw new Error("Demo login failed");
+
+      localStorage.setItem("username", data.data.user_name);
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Error signing in to demo account:", err);
+      setIsSigningIn(false);
+      setError("Couldn't open the demo account. Please try again.");
+    }
   };
 
   const handleGuestContinue = () => {
     router.push("/"); // Redirect to main page
   };
 
-  return { handleGoogleResponse, handleGuestContinue };
+  return {
+    handleGoogleResponse,
+    handleDemoLogin,
+    handleGuestContinue,
+    isSigningIn,
+    error,
+  };
 }

@@ -7,7 +7,13 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useEffect } from "react";
 
 export default function SignupPage() {
-  const { handleGoogleResponse, handleGuestContinue } = useGoogleAuth();
+  const {
+    handleGoogleResponse,
+    handleDemoLogin,
+    handleGuestContinue,
+    isSigningIn,
+    error: signInError,
+  } = useGoogleAuth();
   const { user, isLoading, error } = useCurrentUser();
 
   // Trust the session, not localStorage: a leftover username from an expired
@@ -38,8 +44,27 @@ export default function SignupPage() {
         </div>
 
         {/* Google Sign In Button */}
-        <div className="mb-4">
+        <div className="mb-3">
           <GoogleSignInButton onSuccess={handleGoogleResponse} />
+        </div>
+
+        {/* Demo account: lets people try posting/commenting without Google */}
+        <button
+          type="button"
+          onClick={handleDemoLogin}
+          disabled={isSigningIn}
+          className="w-[320px] max-w-full h-[40px] mb-4 rounded-[4px] bg-accent-600 text-white text-sm font-medium cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-wait"
+        >
+          Try the demo account
+        </button>
+
+        <div aria-live="polite" className="min-h-[20px] mb-3 text-sm">
+          {isSigningIn && (
+            <p className="text-dark-900/70">
+              Signing in&hellip; the server may take a few seconds to wake up.
+            </p>
+          )}
+          {signInError && <p className="text-red-600">{signInError}</p>}
         </div>
 
         {/* Continue as Guest Link */}

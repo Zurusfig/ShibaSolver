@@ -111,6 +111,45 @@ exports.googleLogin = async (req, res) => {
   }
 };
 
+// Signs in as the shared demo account so the app can be tried without a
+// Google account. The upsert also un-bans/un-deletes the account, so one
+// visitor can't lock everyone else out until the nightly reset.
+exports.demoLogin = async (req, res) => {
+  try {
+    const pool = req.app.locals.pool;
+    const user = (
+      await pool.query(
+        `INSERT INTO users (google_account, email, user_name, display_name, education_level)
+         VALUES ('demo-account', 'demo@example.com', 'demo', 'Demo Student', 'Undergraduate - Year 2')
+         ON CONFLICT (google_account) DO UPDATE
+           SET user_state = 'normal', updated_at = now()
+         RETURNING user_id, email, user_name, display_name, profile_picture`
+      )
+    ).rows[0];
+
+    const token = signSessionJwt({ uid: user.user_id });
+    res.cookie("ss_token", token, cookieOpts());
+
+    return res.status(200).json({
+      success: true,
+      new_user: false,
+      data: {
+        user_id: user.user_id,
+        email: user.email,
+        user_name: user.user_name,
+        display_name: user.display_name,
+        avatar_url: user.profile_picture,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      error: { code: "DEMO_LOGIN_FAILED", message: "Could not sign in to the demo account" },
+    });
+  }
+};
+
 exports.logout = (req, res) => {
   res.cookie("ss_token", "", { ...cookieOpts(), maxAge: 0 });
   res.json({ success: true });

@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const { scheduleDemoReset } = require("./services/demoReset");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const rateLimit = require('express-rate-limit');
@@ -65,6 +66,7 @@ app.get('/api-docs.json', (_req, res) => {
 (async () => {
   const pool = await connectDB();
   app.locals.pool = pool;
+  scheduleDemoReset(pool);
   app.get("/", (req, res) => {
     res.status(200).json({
       success: true,

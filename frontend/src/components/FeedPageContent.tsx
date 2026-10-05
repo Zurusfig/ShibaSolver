@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import CreatePostButton from "@/components/post/CreatePostButton";
 import CreatePostModal from "@/components/post/CreatePostModal";
 import { useFetchFeeds } from "@/hooks/useFetchFeeds";
+import { BOOKMARKS_CHANGED } from "@/utils/bookmarkEvents";
 import PostSkeleton from "@/components/post/PostSkeleton";
 import { useNotification } from "@/context/NotificationContext";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -82,8 +83,9 @@ export default function Home() {
     }
   };
 
-  const fetchSavedPosts = async () => {
-    setIsLoadingSaved(true);
+  // silent: refresh in place without swapping the list for "Loading..."
+  const fetchSavedPosts = async ({ silent = false } = {}) => {
+    if (!silent) setIsLoadingSaved(true);
     setSavedError(null);
     try {
       const res = await fetch(`${BASE}/api/v1/posts/bookmarks`, {
@@ -134,6 +136,13 @@ export default function Home() {
   useEffect(() => {
     fetchNotifications();
     fetchSavedPosts();
+  }, []);
+
+  // Keep the saved list in sync when a post is bookmarked/unbookmarked.
+  useEffect(() => {
+    const refresh = () => fetchSavedPosts({ silent: true });
+    window.addEventListener(BOOKMARKS_CHANGED, refresh);
+    return () => window.removeEventListener(BOOKMARKS_CHANGED, refresh);
   }, []);
 
   const handlePostUpdateInFeed = (updated: PostData) => {

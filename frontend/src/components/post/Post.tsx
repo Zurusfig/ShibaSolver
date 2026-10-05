@@ -154,7 +154,7 @@ const Post = ({ postData: initialPostData, userRating, onPostUpdate, onPostDelet
       <hr className="my-4 border-gray-200/80" />
 
       {postData.topComment ? (
-        <TopComment comment={postData.topComment} />
+        <TopComment comment={postData.topComment} href={href} />
       ) : (
         <p className="text-center text-sm text-gray-400">No comments yet.</p>
       )}

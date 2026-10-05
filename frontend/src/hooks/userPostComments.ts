@@ -108,7 +108,7 @@ export default function usePostComments(
         let payload: any = null;
         try { payload = await res.json(); } catch {}
         if (!res.ok) {
-        const msg = payload?.message || payload?.error || `Request failed (${res.status})`;
+        const msg = payload?.message || payload?.error?.message || `Request failed (${res.status})`;
         throw new Error(msg);
         }
         // const res = await fetch(url.toString(), {

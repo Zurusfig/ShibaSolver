@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { PostData } from '@/components/post/Post';
 import MultiSelectSubject from './MultiSelectSubject';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { uploadImageToCloudinary } from '@/utils/uploadImage';
 
 export interface UpdatedPostData {
@@ -111,7 +112,7 @@ const handleRemoveImage = () => {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -170,11 +171,12 @@ const handleRemoveImage = () => {
               <label
                 htmlFor="edit-file-upload"
                 onClick={(e) => e.stopPropagation()}
-                className={`inline-flex items-center gap-2 cursor-pointer rounded-md border border-gray-400 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
-                  uploading ? 'opacity-50 cursor-not-allowed' : ''
+                className={`inline-flex items-center gap-2 rounded-md border border-gray-400 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
+                  uploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                 }`}
               >
-                📎 {uploading ? 'Uploading…' : 'Choose file'}
+                <AttachFileIcon fontSize="small" className="-rotate-45" aria-hidden />
+                {uploading ? 'Uploading…' : 'Choose file'}
               </label>
 
               <input
@@ -204,7 +206,7 @@ const handleRemoveImage = () => {
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="mt-2 text-xs text-red-600 hover:underline"
+                  className="mt-2 text-xs text-red-600 hover:underline cursor-pointer"
                 >
                   Remove image
                 </button>
@@ -252,7 +254,7 @@ const handleRemoveImage = () => {
             <button
               type="submit"
               disabled={isSaving || uploading}
-              className="rounded-md bg-purple-700 px-8 py-2 font-semibold text-white shadow-sm hover:bg-purple-600 disabled:opacity-50"
+              className="rounded-md bg-purple-700 px-8 py-2 font-semibold text-white shadow-sm hover:bg-purple-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               data-testid="edit-post-save-button"
             >
               {isSaving ? 'Saving…' : 'Save Changes'}

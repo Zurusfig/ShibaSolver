@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { MoreVertical, Bookmark, Flag, Pencil, Trash2 } from "lucide-react";
+import { notifyBookmarksChanged } from "@/utils/bookmarkEvents";
+import { useToast } from "@/context/ToastContext";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
 
@@ -27,6 +29,7 @@ export default function PostHeader({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const [loadingBookmark, setLoadingBookmark] = useState(false);
+  const { showSignInPrompt } = useToast();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const stopAll = (e: React.MouseEvent) => {
@@ -91,8 +94,14 @@ export default function PostHeader({
 
       if (!res.ok) {
         setBookmarked(!nextState);
-        console.error(await res.text());
-        alert("Failed to update bookmark.");
+        if (res.status === 401) {
+          showSignInPrompt("Sign in to save posts.");
+        } else {
+          console.error(await res.text());
+          alert("Failed to update bookmark.");
+        }
+      } else {
+        notifyBookmarksChanged();
       }
     } catch (err) {
       console.error("Bookmark error:", err);

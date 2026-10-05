@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import UserAvatar from "@/components/common/UserAvatar";
+import { useToast } from "@/context/ToastContext";
+import { SignInRequiredError } from "@/utils/authError";
 
 type Author = {
   display_name: string;
@@ -29,11 +31,12 @@ const PostAuthor = ({
 }: PostAuthorProps) => {
   const [liked, setLiked] = useState(liked_by_user);
   const [disliked, setDisliked] = useState(disliked_by_user);
-  const [likes, setLikes] = useState(stats.likes);
-  const [dislikes, setDislikes] = useState(stats.dislikes);
+  const [likes, setLikes] = useState(Number(stats.likes) || 0);
+  const [dislikes, setDislikes] = useState(Number(stats.dislikes) || 0);
   const [loading, setLoading] = useState(false);
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
+  const { showSignInPrompt } = useToast();
 
   // 🚀 ==============================
   // FETCH USER RATING ON PAGE LOAD
@@ -54,8 +57,8 @@ const PostAuthor = ({
         if (!row) return;
 
         // update counts
-        setLikes(row.likes);
-        setDislikes(row.dislikes);
+        setLikes(Number(row.likes) || 0);
+        setDislikes(Number(row.dislikes) || 0);
 
         // update user's rating
         if (row.my_rating === 'like') {
@@ -87,6 +90,8 @@ const PostAuthor = ({
       body: JSON.stringify({ target_type, target_id: Number(target_id), rating_type }),
     });
 
+    if (res.status === 401) throw new SignInRequiredError();
+    if (!res.ok) throw new Error(`Rating failed ${res.status}`);
     return await res.json();
   }
 
@@ -98,6 +103,8 @@ const PostAuthor = ({
       body: JSON.stringify({ target_type, target_id: Number(target_id) }),
     });
 
+    if (res.status === 401) throw new SignInRequiredError();
+    if (!res.ok) throw new Error(`Rating failed ${res.status}`);
     return await res.json();
   }
 
@@ -133,8 +140,8 @@ const PostAuthor = ({
       const my_rating = rating?.rating_type ?? json?.data?.my_rating;
 
       if (summary) {
-        setLikes(summary.likes);
-        setDislikes(summary.dislikes);
+        setLikes(Number(summary.likes) || 0);
+        setDislikes(Number(summary.dislikes) || 0);
       }
 
       if (my_rating) {
@@ -142,6 +149,7 @@ const PostAuthor = ({
         setDisliked(my_rating === 'dislike');
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on posts.");
       setLiked(prev.liked);
       setDisliked(prev.disliked);
       setLikes(prev.likes);
@@ -183,8 +191,8 @@ const PostAuthor = ({
       const my_rating = rating?.rating_type ?? json?.data?.my_rating;
 
       if (summary) {
-        setLikes(summary.likes);
-        setDislikes(summary.dislikes);
+        setLikes(Number(summary.likes) || 0);
+        setDislikes(Number(summary.dislikes) || 0);
       }
 
       if (my_rating) {
@@ -192,6 +200,7 @@ const PostAuthor = ({
         setDisliked(my_rating === 'dislike');
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on posts.");
       setLiked(prev.liked);
       setDisliked(prev.disliked);
       setLikes(prev.likes);

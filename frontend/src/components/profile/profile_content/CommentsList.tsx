@@ -3,6 +3,8 @@ import { CommentData } from "@/components/comment/types";
 import useUserComments from "@/hooks/useUserComments";
 import Pagination from "./Pagination";
 import ProfileComment from "./ProfileComment";
+import ProfileEmptyState from "./ProfileEmptyState";
+import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 
 import { useEffect } from "react";
 
@@ -25,6 +27,8 @@ export default function CommentsList({
     setPage,
     refetch,
   } = useUserComments(username);
+  const isPending = isLoading || !comments;
+  const showSkeleton = useDelayedLoading(isPending);
 
   //console.log("CommentsList Debug:", { username, comments, isLoading, error });
 
@@ -56,16 +60,19 @@ export default function CommentsList({
   }
 
   return (
-    <div className="p-4 rounded-lg min-h-[289px]">
-      {isLoading || !comments ? (
+    <div className="w-full max-w-4xl mx-auto min-h-[280px]">
+      {isPending ? (
+        // Blank (same min height) for the first 300ms, then skeletons
+        showSkeleton && (
         <div className="flex flex-col gap-4" >
-          {[1, 2, 3].map((i) => (
+          {[1, 2].map((i) => (
             <div key={i} className="w-full min-h-[12rem] bg-white/10 rounded-2xl p-6 animate-pulse">
               <div className="h-4 bg-white/20 rounded w-1/2 mb-3" />
               <div className="h-4 bg-white/20 rounded w-2/3" />
             </div>
           ))}
         </div>
+        )
       ) : error ? (
         <div className="flex flex-col gap-2 justify-center items-center h-32">
           <p className="text-red-400 text-lg mb-2">Error loading comments</p>
@@ -78,9 +85,7 @@ export default function CommentsList({
           </button>
         </div>
       ) : comments && comments.length === 0 ? (
-        <div className="flex justify-center items-center h-32">
-          <p className="text-white text-xl">No comments available.</p>
-        </div>
+        <ProfileEmptyState message="No comments available." />
       ) : (
         <div className="flex flex-col gap-4" >
           {comments?.map((c) => (

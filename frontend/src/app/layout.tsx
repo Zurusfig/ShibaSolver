@@ -5,6 +5,7 @@ import "./globals.css";
 import CookieConsentModal from "@/components/CookieConsentModal";
 import TopMenu from "@/components/topMenu/TopMenu";
 import { NotificationProvider } from "@/context/NotificationContext"; // ✅ import
+import { ToastProvider } from "@/context/ToastContext";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -28,9 +29,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* ✅ Provider wraps TopMenu + pages so both can use the same context */}
         <NotificationProvider>
-          <TopMenu />
-          {children}
-          <CookieConsentModal />
+          <ToastProvider>
+            <TopMenu />
+            {children}
+            <CookieConsentModal />
+          </ToastProvider>
         </NotificationProvider>
       </body>
     </html>

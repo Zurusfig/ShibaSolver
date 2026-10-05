@@ -6,6 +6,8 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import useUserPosts from "@/hooks/useUserPosts";
 import usePostRatings from "@/hooks/usePostRatings";
 import Pagination from "./Pagination";
+import ProfileEmptyState from "./ProfileEmptyState";
+import { useDelayedLoading } from "@/hooks/useDelayedLoading";
 
 type PostsListProps = {
   username?: string;
@@ -26,6 +28,8 @@ export default function PostsList({
     setPage,
     refetch,
   } = useUserPosts(username);
+  const isPending = isLoading || !posts;
+  const showSkeleton = useDelayedLoading(isPending);
 
   const { postRatings, postStats, isLoadingRatings } = usePostRatings(posts);
 
@@ -61,10 +65,12 @@ export default function PostsList({
   return (
     <div className="w-full max-w-4xl mx-auto min-h-[280px]">
       <div className="flex flex-col items-center w-full gap-6">
-        {isLoading || !posts ? (
+        {isPending ? (
+          // Blank (same min height) for the first 300ms, then skeletons
+          showSkeleton && (
           <div className="w-full space-y-6">
             {/* Show multiple skeleton loaders */}
-            {[1, 2, 3].map((i) => (
+            {[1, 2].map((i) => (
               <div
                 key={i}
                 className="w-full min-h-[200px] bg-white/10 rounded-2xl p-6 animate-pulse"
@@ -82,6 +88,7 @@ export default function PostsList({
               </div>
             ))}
           </div>
+          )
         ) : error ? (
           <div className="flex flex-col items-center justify-center py-8">
             <p className="text-red-400 text-lg mb-2">Error loading posts</p>
@@ -94,9 +101,7 @@ export default function PostsList({
             </button>
           </div>
         ) : posts && posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8">
-            <p className="text-white text-lg">No posts available.</p>
-          </div>
+          <ProfileEmptyState message="No posts available." />
         ) : (
           posts?.map((post) => {
             const rating = postRatings[post.post_id] || null;

@@ -62,7 +62,9 @@ export function useUserProfile(username?: string | null): UseUserResult {
   const [data, setData] = useState<BackendUser | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [shibaMeter, setShibaMeter] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
+  // Start in the loading state when there is a user to fetch; starting at
+  // false rendered "User not found" for a frame before the request began.
+  const [loading, setLoading] = useState<boolean>(Boolean(username));
   const [nonce, setNonce] = useState<number>(0);
 
   const refetch = () => setNonce((n) => n + 1);

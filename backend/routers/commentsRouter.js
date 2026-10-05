@@ -7,7 +7,9 @@ const router = express.Router();
 //GET
 router.get('/user/:userId', requireAuth, commentsCtrl.getCommentsByUser);
 router.get('/post/:postId/top', commentsCtrl.getTopComment);
-router.get('/post/:postId', requireAuth, commentsCtrl.getCommentsAccessControlled);
+// optionalAuth: the controller itself decides what guests may see
+// (recent posts without solutions; LOGIN_REQUIRED for older ones).
+router.get('/post/:postId', optionalAuth, commentsCtrl.getCommentsAccessControlled);
 router.get('/:id', requireAuth, commentsCtrl.getComment);
 
 //POST

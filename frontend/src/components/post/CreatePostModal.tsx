@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import MultiSelectSubject from './MultiSelectSubject';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { useCreatePost } from '@/hooks/useCreatePost';
 import { PostData } from './Post';
 
@@ -116,7 +117,7 @@ const CreatePostModal = ({ onClose, onPostSubmit }: CreatePostModalProps) => {
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -177,11 +178,12 @@ const CreatePostModal = ({ onClose, onPostSubmit }: CreatePostModalProps) => {
               {/* The visible "button" */}
               <label
                 htmlFor="file-upload"
-                className={`inline-flex items-center gap-2 cursor-pointer rounded-md border border-gray-400 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
-                  uploading ? 'opacity-50 cursor-not-allowed' : ''
+                className={`inline-flex items-center gap-2 rounded-md border border-gray-400 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
+                  uploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                 }`}
               >
-                📎 {uploading ? 'Uploading...' : 'Choose file'}
+                <AttachFileIcon fontSize="small" className="-rotate-45" aria-hidden />
+                {uploading ? 'Uploading...' : 'Choose file'}
               </label>
 
               {/* The hidden input */}
@@ -225,7 +227,7 @@ const CreatePostModal = ({ onClose, onPostSubmit }: CreatePostModalProps) => {
             <button
               type="submit"
               disabled={isCreating || uploading}
-              className="rounded-md bg-purple-700 px-8 py-2 font-semibold text-white shadow-sm hover:bg-purple-600 disabled:opacity-50"
+              className="rounded-md bg-purple-700 px-8 py-2 font-semibold text-white shadow-sm hover:bg-purple-600 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               data-testid="create-post-submit"
             >
               {isCreating ? 'Submitting...' : 'Submit'}

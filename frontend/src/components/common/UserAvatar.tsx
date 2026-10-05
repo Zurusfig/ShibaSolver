@@ -26,18 +26,30 @@ type Props = {
 };
 
 /**
- * Tones from the app's violet identity, spanning indigo to magenta so authors
- * stay distinguishable without the page turning into a rainbow. Every one of
- * these carries white text at AA contrast.
+ * Distinct hues so different authors are easy to tell apart at a glance.
+ * Each is dark enough to carry white text at WCAG AA contrast (>= 4.5:1).
  */
 const TONES = [
-  "#3C1A78",
-  "#4B0082",
-  "#6A2C91",
-  "#8E3A96",
-  "#A8348A",
-  "#5D3FA6",
+  "#6D28D9", // violet
+  "#3730A3", // indigo
+  "#0369A1", // sky
+  "#0F766E", // teal
+  "#047857", // emerald
+  "#B45309", // amber
+  "#C2410C", // orange
+  "#BE123C", // rose
+  "#A21CAF", // fuchsia
+  "#475569", // slate
 ] as const;
+
+/**
+ * Many callers substitute the bundled default image when a user has no
+ * picture. Treat it as "no picture" so everyone without a photo gets the
+ * same initial avatar instead of a mix of initials and the stock image.
+ */
+function isRealPicture(src?: string | null): src is string {
+  return Boolean(src && src.trim() && !src.includes("DefaultAvatar"));
+}
 
 /** Stable per-user colour: the same name always gets the same tone. */
 function toneFor(key: string): string {
@@ -65,7 +77,7 @@ export default function UserAvatar({ name, src, size, className = "" }: Props) {
   }, [src]);
 
   const label = (name ?? "").trim();
-  const showImage = Boolean(src && src.trim() && !failed);
+  const showImage = isRealPicture(src) && !failed;
 
   const sizing = size !== undefined ? { width: size, height: size } : undefined;
 

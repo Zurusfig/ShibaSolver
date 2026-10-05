@@ -113,14 +113,10 @@ export default function CreateComment({
         {/* Pfp */}
         <div className="w-10 h-10 mr-2 flex-shrink-0">
           <ProfilePic
-            src={
-              author?.profile_picture ??
-              currentUser?.profile_picture ??
-              "/image/DefaultAvatar.png"
-            }
-            alt={`${
-              author?.display_name ?? currentUser?.display_name ?? "User"
-            }'s avatar`}
+            src={author?.profile_picture ?? currentUser?.profile_picture ?? undefined}
+            // ProfilePic uses alt as the avatar's name: pass the plain name so
+            // the initial's colour matches this user's avatar everywhere else.
+            alt={author?.display_name ?? currentUser?.display_name ?? "User"}
             size={40}
           />
         </div>

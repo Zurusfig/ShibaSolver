@@ -8,8 +8,8 @@ Department of Computer Engineering, Chulalongkorn University.
 
 **Live demo:** https://shiba-solver.vercel.app  ·  **API:** https://shibasolver.onrender.com  ·  **API docs:** https://shibasolver.onrender.com/api-docs
 
-> The API is hosted on a free tier that sleeps when idle — the first request after a quiet
-> period can take up to a minute to wake up. Later requests are fast.
+> Want to look around without a Google account? Click **Try the demo account** on the
+> sign-in page. Anything you post there is cleared overnight.
 
 ---
 
@@ -127,6 +127,7 @@ Note the filename: the server loads `config/config.env`, **not** `.env`. Fill in
 | `PORT` | no | Defaults to 5000; leave unset on hosts that inject it |
 | `JWT_EXPIRES_IN` | no | Defaults to `7d` |
 | `COOKIE_DOMAIN` | no | Leave unset unless the frontend and API share a parent domain |
+| `DEMO_RESET` | no | `true` wipes and reseeds the demo data every night. Leave unset locally |
 
 ### 4. Configure the frontend
 
@@ -140,6 +141,7 @@ cp frontend/.env.example frontend/.env.local
 | `NEXT_PUBLIC_BACKEND_URL` | Same value — both are used across the codebase |
 | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Same client ID as the backend |
 | `NEXT_PUBLIC_USE_MOCK` | `1` serves mock data instead of calling the API |
+| `API_PROXY_TARGET` | Optional. Backend origin to proxy `/api/v1` through the frontend's own domain. If you set it, point both URLs above at the frontend |
 
 `NEXT_PUBLIC_*` values are inlined at build time, so changing one requires a restart
 locally and a redeploy in production. Add `http://localhost:3000` to your Google client's
@@ -218,16 +220,23 @@ frontend/
 The frontend deploys to Vercel with root directory `frontend`; the API deploys to any
 always-on Node host (Render is used here) with root directory `backend`, build `npm install`
 and start `npm start`. After the first deploy, set `FRONTEND_ORIGIN` on the API to the exact
-frontend URL and add that URL to the Google client's authorised origins.
+frontend URL and add that URL to the Google client's authorised origins. On a free tier, have
+an uptime service ping `/health` every 10 minutes so the API doesn't fall asleep.
 
 ---
 
 ## About this fork
 
 The upstream repository is the original coursework, developed by a team of 16 contributors
-between August and November 2025. This fork exists to host a public demo and contains the
-fixes required to deploy it — schema corrections, environment-driven configuration, and a
-seed script.
+between August and November 2025. I forked it to host a public demo, and kept fixing things
+after that:
+
+- The site loads fast. The API used to fall asleep when nobody was using it, so the first
+  visit could take up to a minute. It's kept awake now.
+- Google sign-in works again, including in Safari and private windows.
+- There's a shared demo account, so anyone can post, comment and vote without signing in
+  with Google. The demo data resets every night.
+- A lot of smaller fixes to voting, comments, bookmarks and profiles.
 
 My contribution to the original project was **153 of 604 commits**, the largest individual
 share, concentrated on the frontend: the comment and reply system, user profiles and profile

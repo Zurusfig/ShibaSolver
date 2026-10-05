@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import CreatePostButton from "@/components/post/CreatePostButton";
 import CreatePostModal from "@/components/post/CreatePostModal";
 import { useFetchFeeds } from "@/hooks/useFetchFeeds";
+import PostSkeleton from "@/components/post/PostSkeleton";
 import { useNotification } from "@/context/NotificationContext";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import SearchComponent from "@/components/topMenu/SearchComponent";
@@ -171,7 +172,7 @@ export default function Home() {
   };
 
   const renderContent = () => {
-    if (isLoading) return <p className="text-center mt-10">Loading posts...</p>;
+    if (isLoading) return <PostSkeleton />;
     if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
     if (posts.length === 0)
       return <p className="text-center mt-10">No posts yet.</p>;

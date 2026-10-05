@@ -31,6 +31,24 @@ VALUES
    'Chemistry TA. I will draw you a mechanism.', ARRAY['Organic Chemistry','Physics'], 109, 4, now() - interval '150 days')
 ON CONFLICT (google_account) DO NOTHING;
 
+-- Shared demo account used by POST /api/v1/auth/demo. Unlike the users above,
+-- re-running restores its profile, since anyone signed in as demo can edit it.
+INSERT INTO users (google_account, email, user_name, display_name, education_level, bio, interested_subjects, user_state, created_at)
+VALUES
+  ('demo-account','demo@example.com','demo','Demo Student','Undergraduate - Year 2',
+   'Shared demo account. Feel free to post, comment and vote -- everything resets nightly.',
+   ARRAY['Algorithms','Calculus','Databases'], 'normal', now() - interval '30 days')
+ON CONFLICT (google_account) DO UPDATE
+  SET email = EXCLUDED.email,
+      user_name = EXCLUDED.user_name,
+      display_name = EXCLUDED.display_name,
+      education_level = EXCLUDED.education_level,
+      bio = EXCLUDED.bio,
+      interested_subjects = EXCLUDED.interested_subjects,
+      profile_picture = NULL,
+      user_state = 'normal',
+      updated_at = now();
+
 -- === Tags ==================================================================
 INSERT INTO tags (tag_name) VALUES
   ('Algorithms'), ('Data Structures'), ('Calculus'), ('Linear Algebra'),
@@ -253,6 +271,16 @@ JOIN posts p ON p.title IN (
   'SN1 vs SN2: how do I decide quickly on an exam?'
 )
 WHERE u.email = 'sophie.miller@example.com'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO bookmarks (user_id, post_id, created_at)
+SELECT u.user_id, p.post_id, now() - interval '2 days'
+FROM users u
+JOIN posts p ON p.title IN (
+  'Why does my recursive Fibonacci take forever at n = 45?',
+  'Determinant is zero -- what does that actually mean geometrically?'
+)
+WHERE u.google_account = 'demo-account'
 ON CONFLICT DO NOTHING;
 
 -- === Summary ===============================================================

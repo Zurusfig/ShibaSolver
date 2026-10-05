@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import UserAvatar from "@/components/common/UserAvatar";
+import { useToast } from "@/context/ToastContext";
+import { SignInRequiredError } from "@/utils/authError";
 
 type Author = {
   display_name: string;
@@ -34,6 +36,7 @@ const PostAuthor = ({
   const [loading, setLoading] = useState(false);
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
+  const { showSignInPrompt } = useToast();
 
   // 🚀 ==============================
   // FETCH USER RATING ON PAGE LOAD
@@ -87,6 +90,8 @@ const PostAuthor = ({
       body: JSON.stringify({ target_type, target_id: Number(target_id), rating_type }),
     });
 
+    if (res.status === 401) throw new SignInRequiredError();
+    if (!res.ok) throw new Error(`Rating failed ${res.status}`);
     return await res.json();
   }
 
@@ -98,6 +103,8 @@ const PostAuthor = ({
       body: JSON.stringify({ target_type, target_id: Number(target_id) }),
     });
 
+    if (res.status === 401) throw new SignInRequiredError();
+    if (!res.ok) throw new Error(`Rating failed ${res.status}`);
     return await res.json();
   }
 
@@ -142,6 +149,7 @@ const PostAuthor = ({
         setDisliked(my_rating === 'dislike');
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on posts.");
       setLiked(prev.liked);
       setDisliked(prev.disliked);
       setLikes(prev.likes);
@@ -192,6 +200,7 @@ const PostAuthor = ({
         setDisliked(my_rating === 'dislike');
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on posts.");
       setLiked(prev.liked);
       setDisliked(prev.disliked);
       setLikes(prev.likes);

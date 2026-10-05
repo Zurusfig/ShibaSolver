@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import { CommentContent, UserLikeStatus } from "@/components/comment/types";
 import { CommentActions } from "@/components/comment/types";
+import { useToast } from "@/context/ToastContext";
+import { SignInRequiredError } from "@/utils/authError";
 
 export const useCommentActions = (
   commentId: string,
@@ -43,6 +45,7 @@ export const useCommentActions = (
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL ;
+  const { showSignInPrompt } = useToast();
 
   async function postRate(
     target_type: "post" | "comment",
@@ -62,9 +65,7 @@ export const useCommentActions = (
       });
 
       if (!res.ok) {
-        if (res.status === 401) {
-          console.warn("User not authenticated");
-        }
+        if (res.status === 401) throw new SignInRequiredError();
         throw new Error(`POST /ratings failed: ${res.status}`);
       }
 
@@ -91,9 +92,7 @@ export const useCommentActions = (
       });
 
       if (!res.ok) {
-        if (res.status === 401) {
-          console.warn("User not authenticated");
-        }
+        if (res.status === 401) throw new SignInRequiredError();
         throw new Error(`DELETE /ratings failed: ${res.status}`);
       }
 
@@ -146,6 +145,7 @@ export const useCommentActions = (
         setDisliked(my_rating === "dislike");
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on comments.");
       // rollback on error
       setLiked(prev.liked);
       setDisliked(prev.disliked);
@@ -197,6 +197,7 @@ export const useCommentActions = (
         setDisliked(my_rating === "dislike");
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on comments.");
       // rollback on error
       setLiked(prev.liked);
       setDisliked(prev.disliked);

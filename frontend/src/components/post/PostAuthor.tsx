@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import UserAvatar from "@/components/common/UserAvatar";
+import { useToast } from "@/context/ToastContext";
+import { SignInRequiredError } from "@/utils/authError";
 
 type Author = {
   display_name: string
@@ -38,6 +40,7 @@ const PostAuthor = ({
   const [loading, setLoading] = useState(false)
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
+  const { showSignInPrompt } = useToast();
 
   // -------------------------------------------------------
   // 🔥 FIX #1 — Fetch real rating on mount AFTER REFRESH
@@ -88,6 +91,7 @@ const PostAuthor = ({
       }),
     });
 
+    if (res.status === 401) throw new SignInRequiredError();
     if (!res.ok) throw new Error(`POST failed ${res.status}`);
     return await res.json();
   }
@@ -103,6 +107,7 @@ const PostAuthor = ({
       }),
     });
 
+    if (res.status === 401) throw new SignInRequiredError();
     if (!res.ok) throw new Error(`DELETE failed ${res.status}`);
     return await res.json();
   }
@@ -143,6 +148,7 @@ const PostAuthor = ({
         setDisliked(rating.rating_type === 'dislike');
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on posts.");
       setLiked(prev.liked);
       setDisliked(prev.disliked);
       setLikes(prev.likes);
@@ -188,6 +194,7 @@ const PostAuthor = ({
         setDisliked(rating.rating_type === 'dislike');
       }
     } catch (err) {
+      if (err instanceof SignInRequiredError) showSignInPrompt("Sign in to vote on posts.");
       setLiked(prev.liked);
       setDisliked(prev.disliked);
       setLikes(prev.likes);

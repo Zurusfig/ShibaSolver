@@ -71,7 +71,8 @@ export const useCommentActions = (
 
       return await res.json();
     } catch (err) {
-      console.error("Error posting rating:", err);
+      // Not being signed in is expected; the caller shows a prompt instead.
+      if (!(err instanceof SignInRequiredError)) console.error("Error posting rating:", err);
       throw err;
     }
   }
@@ -98,7 +99,8 @@ export const useCommentActions = (
 
       return await res.json();
     } catch (err) {
-      console.error("Error deleting rating:", err);
+      // Not being signed in is expected; the caller shows a prompt instead.
+      if (!(err instanceof SignInRequiredError)) console.error("Error deleting rating:", err);
       throw err;
     }
   }

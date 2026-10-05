@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ReplyItemProps, CommentContent } from './types';
 import { useCommentActions } from './useCommentActions';
+import useCommentRating from '@/hooks/useCommentRating';
 import { formatTimeAgo } from './utils';
 import useCurrentUser from '@/hooks/useCurrentUser';
 
@@ -35,6 +36,12 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
     image: reply.comment_image !== "null" && reply.comment_image ? reply.comment_image : null,
   };
 
+  // Load this user's existing vote so the buttons start in the right state;
+  // otherwise re-liking a comment you already liked looks like a no-op.
+  const { rating: myRating } = useCommentRating(String(reply.id));
+  const myLikeStatus =
+    myRating === "like" ? "liked" : myRating === "dislike" ? "disliked" : "none";
+
   const {
     likes,
     dislikes,
@@ -61,7 +68,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
     reply.dislikes,
     reply.is_solution,
     onDelete,
-    "none",
+    myLikeStatus,
     initialContent
   );
 

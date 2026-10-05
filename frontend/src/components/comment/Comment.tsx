@@ -4,6 +4,7 @@ import React from "react";
 import { useEffect } from "react";
 import { CommentContent, CommentProps } from "./types";
 import { useCommentActions } from "@/components/comment/useCommentActions";
+import useCommentRating from "@/hooks/useCommentRating";
 import { formatTimeAgo } from "@/components/comment/utils";
 
 import { LikeButton } from "@/components/comment/LikeButton";
@@ -47,6 +48,12 @@ const Comment = ({ commentData, allComments = [], onDelete, postId }: CommentPro
         : null, // Use null instead of undefined for consistency
   };
 
+  // Load this user's existing vote so the buttons start in the right state;
+  // otherwise re-liking a comment you already liked looks like a no-op.
+  const { rating: myRating } = useCommentRating(String(commentData.id));
+  const myLikeStatus =
+    myRating === "like" ? "liked" : myRating === "dislike" ? "disliked" : "none";
+
   const {
     likes,
     dislikes,
@@ -80,7 +87,7 @@ const Comment = ({ commentData, allComments = [], onDelete, postId }: CommentPro
     commentData.dislikes,
     commentData.is_solution,
     onDelete,
-    "none",
+    myLikeStatus,
     initialContent
   );
   const [replyContent, setReplyContent] = useState<CommentContent>({

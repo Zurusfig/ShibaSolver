@@ -29,8 +29,8 @@ const PostAuthor = ({
 }: PostAuthorProps) => {
   const [liked, setLiked] = useState(liked_by_user);
   const [disliked, setDisliked] = useState(disliked_by_user);
-  const [likes, setLikes] = useState(stats.likes);
-  const [dislikes, setDislikes] = useState(stats.dislikes);
+  const [likes, setLikes] = useState(Number(stats.likes) || 0);
+  const [dislikes, setDislikes] = useState(Number(stats.dislikes) || 0);
   const [loading, setLoading] = useState(false);
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
@@ -54,8 +54,8 @@ const PostAuthor = ({
         if (!row) return;
 
         // update counts
-        setLikes(row.likes);
-        setDislikes(row.dislikes);
+        setLikes(Number(row.likes) || 0);
+        setDislikes(Number(row.dislikes) || 0);
 
         // update user's rating
         if (row.my_rating === 'like') {
@@ -133,8 +133,8 @@ const PostAuthor = ({
       const my_rating = rating?.rating_type ?? json?.data?.my_rating;
 
       if (summary) {
-        setLikes(summary.likes);
-        setDislikes(summary.dislikes);
+        setLikes(Number(summary.likes) || 0);
+        setDislikes(Number(summary.dislikes) || 0);
       }
 
       if (my_rating) {
@@ -183,8 +183,8 @@ const PostAuthor = ({
       const my_rating = rating?.rating_type ?? json?.data?.my_rating;
 
       if (summary) {
-        setLikes(summary.likes);
-        setDislikes(summary.dislikes);
+        setLikes(Number(summary.likes) || 0);
+        setDislikes(Number(summary.dislikes) || 0);
       }
 
       if (my_rating) {

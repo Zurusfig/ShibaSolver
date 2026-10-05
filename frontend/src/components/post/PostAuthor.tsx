@@ -31,8 +31,10 @@ const PostAuthor = ({
 
   const [liked, setLiked] = useState(liked_by_user)
   const [disliked, setDisliked] = useState(disliked_by_user)
-  const [likes, setLikes] = useState(stats.likes)
-  const [dislikes, setDislikes] = useState(stats.dislikes)
+  // Counts can arrive as strings (Postgres bigint), and "3" + 1 is "31" --
+  // coerce everywhere they're stored.
+  const [likes, setLikes] = useState(Number(stats.likes) || 0)
+  const [dislikes, setDislikes] = useState(Number(stats.dislikes) || 0)
   const [loading, setLoading] = useState(false)
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL  ;
@@ -56,8 +58,8 @@ const PostAuthor = ({
         if (!data) return;
 
         // apply correct values
-        setLikes(data.likes);
-        setDislikes(data.dislikes);
+        setLikes(Number(data.likes) || 0);
+        setDislikes(Number(data.dislikes) || 0);
         setLiked(data.my_rating === "like");
         setDisliked(data.my_rating === "dislike");
       } catch (err) {
@@ -132,8 +134,8 @@ const PostAuthor = ({
       const rating = json?.data?.rating ?? json?.rating;
 
       if (summary) {
-        setLikes(summary.likes);
-        setDislikes(summary.dislikes);
+        setLikes(Number(summary.likes) || 0);
+        setDislikes(Number(summary.dislikes) || 0);
       }
 
       if (rating?.rating_type) {
@@ -177,8 +179,8 @@ const PostAuthor = ({
       const rating = json?.data?.rating ?? json?.rating;
 
       if (summary) {
-        setLikes(summary.likes);
-        setDislikes(summary.dislikes);
+        setLikes(Number(summary.likes) || 0);
+        setDislikes(Number(summary.dislikes) || 0);
       }
 
       if (rating?.rating_type) {
